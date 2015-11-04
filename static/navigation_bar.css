@@ -1,0 +1,37 @@
+ul#menu_wrap {
+position:relative;
+margin-top:20px;
+margin-left:auto;
+margin-right:auto;
+/*width:746px;*/
+height:45px;
+list-style-type:none;
+-webkit-border-radius:12px;
+-moz-border-radius:12px;
+border-radius:12px;
+padding:0;
+}
+
+ul#menu_wrap li a {
+cursor:pointer;
+text-align:center;
+font:16px/100% Verdana, Geneva, sans-serif;
+font-weight:700;
+position:relative;
+min-width:50px;
+height:20px;
+float:left;
+text-decoration:none;
+padding:12.5px 10px;
+}
+
+ul#menu_wrap,ul#menu_wrap a {
+color: rgb(0, 65, 122);
+border-right:3px solid #4082bc;
+background:rgb(241, 241, 241);
+}
+
+ul#menu_wrap a:hover,ul#menu_wrap a:focus {
+color: white;
+background: rgb(0, 155, 219);
+}
