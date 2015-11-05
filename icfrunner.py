@@ -49,7 +49,8 @@ class ICFRunner(object):
         self.catalog = catalog()
         self.cluster_finder = cluster_finder()
         self.cluster_finder.conn.set_schema(self.conn.schema)
-        self.suffix = DEFAULT_SUFFIX[catalog.CATALOG]
+        if catalog.CATALOG in DEFAULT_SUFFIX:
+            self.suffix = DEFAULT_SUFFIX[catalog.CATALOG]
         if catalog == 'xmatch':
             self.catalog.reload_spectra = True
 
@@ -197,11 +198,11 @@ where iid = %s""" % global_iid], quiet=False)
         global_iid = self.get_global_iid(user, iid)
         crawler = DataLoader()
         crawler.conn.set_schema(self.conn.schema)
-        crawler.set_viz_catalog(self.catalog.CATALOG)
-        crawler.run_viz_catalog(global_iid, query_vizier=True, reprocess=True)
         if self.catalog.CATALOG != 'xmatch':
             crawler.set_viz_catalog('spectra')
             crawler.run_viz_catalog(global_iid, query_vizier=True, reprocess=True)
+        crawler.set_viz_catalog(self.catalog.CATALOG)
+        crawler.run_viz_catalog(global_iid, query_vizier=True, reprocess=True)
 
     def run_icf(self, user, iid):
         """
