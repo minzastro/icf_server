@@ -1,0 +1,26 @@
+{% extends "root.template" %}
+{% block body %}
+<h2>IID: {{iid}}</h2>
+
+<table id="catalogs" width=500 columns='SSSS'>
+    <caption>Catalogs used</caption>
+    <thead>
+        <tr>
+            <th>Catalog</th>
+            <th>Objects</th>
+            <th>Cluster detections</th>
+            <th>Last loaded</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%for cat in catalogs%}
+    <tr>
+        <td>{{cat.name}}</td>
+        <td>{{cat.objects_count}}</td>
+        <td>{{cat.peaks_count}}</td>
+        <td>{{cat.loading_date}}</td>
+    </tr>
+    {%endfor%}
+    </tbody>
+</table>
+{% endblock %}

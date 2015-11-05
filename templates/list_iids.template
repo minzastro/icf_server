@@ -1,0 +1,84 @@
+{% extends "root.template" %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/DataTables/media/css/jquery.dataTables.css">
+{% endblock %}
+
+{% block head %}
+    <script type="text/javascript" charset="utf8" src="/static/DataTables/media/js/jquery.js"></script>
+    <script type="text/javascript" charset="utf8" src="/static/DataTables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        function addRowHandlers() {
+            var table = document.getElementById("iid_table");
+            var rows = table.getElementsByTagName("tr");
+            for (i = 1; i < rows.length; i++) {
+                var currentRow = table.rows[i];
+                var createClickHandler =
+                    function(row)
+                    {
+                        return function() {
+                                                var cell = row.getElementsByTagName("td")[0];
+                                                var id = cell.innerHTML;
+                                                window.location = "single_iid?iid=" + id;
+                                         };
+                    }
+                currentRow.ondblclick = createClickHandler(currentRow);
+            }
+        };
+        
+        $(window).load(function(){
+            var selected = [];    
+            $('#iid_table').DataTable({
+                ordering: true,
+                autoWidth: false,
+                paging: false,
+                "rowCallback": function( row, data ) {
+                    if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                         $(row).addClass('selected');
+                    }
+                }
+            });
+            addRowHandlers();
+            $('#iid_table tbody').on('click', 'tr', function () {
+                var id = this.id;
+                var index = $.inArray(id, selected);
+         
+                if ( index === -1 ) {
+                    selected.push( id );
+                } else {
+                    selected.splice( index, 1 );
+                }
+         
+                $(this).toggleClass('selected');
+            } );
+        });
+        function crawl(){
+            items = [];
+            var button = document.getElementById("crawl");
+            button.value = 'Running...';
+            var data = $("#iid_table").DataTable().rows('.selected').data();
+            //alert(data.length);
+            for (var i = 0; i < data.length; i++ ){
+                items.push(data[i][0]);
+            }
+            var select = document.getElementById("catalog");
+            
+            $.post('crawl', {iids: items, 
+                             catalog: select.options[select.selectedIndex].value},
+                   function(response){
+                       window.location.reload();
+                   });
+        }
+    </script>
+{% endblock %}
+{% block body %}
+<h2>All iids:</h2>
+Active catalog:
+<select id='catalog'>
+    <option value='xmatch'>XMatch (SDSS+UKIDSS+AllWISE)</option>
+    <option value='cfhtls_photoz'>CFHT Wide photo-z</option>
+</select><br/>
+Selected iems: 
+<input type='button' id="crawl" value='Crawl' onclick="crawl()"/>
+<input type='button' value='Run ICF'/>
+{{iid_list}}
+{% endblock %}
