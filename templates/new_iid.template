@@ -1,6 +1,6 @@
 {% extends "root.template" %}
 {% block body %}
-		<form method="post" action="{{root}}/iid/create_new_iid">
+		<form method="post" action="../iid/create_new_iid">
 			RA: <input type="text" name="ra"/><br />
 			DE: <input type="text" name="de"/><br />
 			IID: <input type="text" name="iid"/><br />

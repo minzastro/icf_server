@@ -100,7 +100,8 @@ class IIDmanager(object):
             select detection_id, z, z_err, lambda, bcg_distance 
               from cluster_detections
              where iid = %s""" % global_iid))
-        data['detections'] = detections.get_html_string()
+        data['detections'] = detections.get_html_string(attributes={'border': 1,
+                                                             'id': 'detections'})
         template = JINJA.get_template('single_iid.template')
         return template.render(data)
         

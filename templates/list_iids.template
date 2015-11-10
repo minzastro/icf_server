@@ -51,6 +51,7 @@
                 $(this).toggleClass('selected');
             } );
         });
+        
         function crawl(){
             items = [];
             var button = document.getElementById("crawl");
@@ -67,7 +68,24 @@
                    function(response){
                        window.location.reload();
                    });
-            button.value = 'Crawl';
+        }
+
+        function run_icf(){
+            items = [];
+            var button = document.getElementById("run_icf");
+            button.value = 'Running...';
+            var data = $("#iid_table").DataTable().rows('.selected').data();
+            //alert(data.length);
+            for (var i = 0; i < data.length; i++ ){
+                items.push(data[i][0]);
+            }
+            var select = document.getElementById("catalog");
+            
+            $.post('run_icf', {iids: items, 
+                               catalog: select.options[select.selectedIndex].value},
+                   function(response){
+                       window.location.reload();
+                   });
         }
     </script>
 {% endblock %}
@@ -78,8 +96,9 @@ Active catalog:
     <option value='xmatch'>XMatch (SDSS+UKIDSS+AllWISE)</option>
     <option value='cfhtls_photoz'>CFHT Wide photo-z</option>
 </select><br/>
-Selected iems: 
+Selected items: 
 <input type='button' id="crawl" value='Crawl' onclick="crawl()"/>
-<input type='button' value='Run ICF'/>
+<input type='button' id="run_icf" value='Run ICF' onclick="run_icf()"/><br/>
+<div>Double click to view detections...</div>
 {{iid_list}}
 {% endblock %}
