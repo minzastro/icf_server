@@ -28,10 +28,13 @@ SESSION_KEY = '_cp_username'
 def error_page_404(status, message, traceback, version):
     return "Error %s - Page does not exist yet. It might appear later!" % status
     
-cherrypy.config.update({'error_page.404': error_page_404})
+#cherrypy.config.update({'error_page.404': error_page_404})
     
 class ICFServer(object):
 
+    ROOT = '/icf'
+    LOGIN = '/icf/pages/login_form.html'
+    
     def __init__(self):
         self.passwords = PasswordManager()
         self.runner = ICFRunner('xmatch')
@@ -42,30 +45,36 @@ class ICFServer(object):
     
     def check_auth(self):
         if self.current_user is None:
-            raise cherrypy.HTTPRedirect('/pages/login_form.html')
+            raise cherrypy.HTTPRedirect(self.LOGIN)
 
     def start(self):
         cherrypy.config.update(self.config)
-        cherrypy.tree.mount(self, '/', config = self.config)
+        cherrypy.tree.mount(self, '/', config=self.config)
         cherrypy.tree.mount(self.iidmanager, '/iid', config=self.config)
         cherrypy.engine.start()
         cherrypy.engine.block()
     
+    def get_basic(self):
+        return {'username': self.current_user,
+                'root': self.ROOT}
+
     def default(self):
         template = JINJA.get_template('root.template')
-        return template.render({'username': self.current_user})
+        return template.render({'username': self.current_user,
+                                'root': self.ROOT})
 
     @cherrypy.expose
     def index(self):
+        print 'Called index'
         if self.current_user is None:
-            raise cherrypy.HTTPRedirect('/pages/login_form.html')
+            raise cherrypy.HTTPRedirect(self.LOGIN)
         else:
             return self.default()
 
     @cherrypy.expose
     def login(self, username=None, password=None):
         if username is None or password is None:
-            raise cherrypy.HTTPRedirect('/pages/login_form.html')
+            raise cherrypy.HTTPRedirect(self.LOGIN)
         login_result = self.passwords.verify_password(username, password)
         if login_result == self.passwords.PASSWORD_FAILED:
             raise cherrypy.HTTPError(401, "Password failed!")
@@ -74,7 +83,7 @@ class ICFServer(object):
         else:
             self.current_user = username
             cherrypy.session[SESSION_KEY] = cherrypy.request.login = username
-            raise cherrypy.HTTPRedirect("/")
+            raise cherrypy.HTTPRedirect(self.ROOT)
     
     @cherrypy.expose
     def logout(self):
@@ -84,7 +93,7 @@ class ICFServer(object):
         if username:
             cherrypy.request.login = None
             self.current_user = None
-        raise cherrypy.HTTPRedirect("/")
+        raise cherrypy.HTTPRedirect(self.ROOT)
 
 
 if __name__ == '__main__':

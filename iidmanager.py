@@ -21,13 +21,13 @@ class IIDmanager(object):
     def new_iid(self):
         self.parent.check_auth()
         template = JINJA.get_template('new_iid.template')
-        return template.render({'username': self.parent.current_user})
+        return template.render(self.parent.get_basic())
         
     @expose
     def create_new_iid(self, iid, ra, de):
         self.parent.check_auth()
         self.parent.runner.create_iid(self.parent.current_user, iid, ra, de)
-        raise cherrypy.HTTPRedirect("/iid/list_iids")
+        raise cherrypy.HTTPRedirect("%s/iid/list_iids" % self.parent.ROOT)
     
     @expose
     def restricted(self):
@@ -48,9 +48,9 @@ class IIDmanager(object):
                                                   group by 1,2,3
                                                   order by 2
                                                     """ % self.parent.current_user))
-        data = {'username': self.parent.current_user,
-                'iid_list': table.get_html_string(attributes={'border': 1,
-                                                              'id': 'iid_table'})}
+        data = self.parent.get_basic()
+        data['iid_list'] = table.get_html_string(attributes={'border': 1,
+                                                             'id': 'iid_table'})
         return template.render(data)
 
     @expose
@@ -88,9 +88,9 @@ class IIDmanager(object):
         cur = self.get_cursor("""select catalog, objects_count, peaks_count, loading_date
                                    from fields_properties
                                   where iid = %s""" % global_iid)
-        data = {'catalogs': [], 
-                'iid': iid,
-                'username': self.parent.current_user}
+        data = self.parent.get_basic()
+        data.update({'catalogs': [], 
+                     'iid': iid})
         for row in cur.fetchall():
             data['catalogs'].append({'name': row[0],
                                      'objects_count': row[1],

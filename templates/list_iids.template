@@ -1,11 +1,11 @@
 {% extends "root.template" %}
 {% block css %}
-<link rel="stylesheet" type="text/css" href="/static/DataTables/media/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{root}}/static/DataTables/media/css/jquery.dataTables.css">
 {% endblock %}
 
 {% block head %}
-    <script type="text/javascript" charset="utf8" src="/static/DataTables/media/js/jquery.js"></script>
-    <script type="text/javascript" charset="utf8" src="/static/DataTables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="{{root}}/static/DataTables/media/js/jquery.js"></script>
+    <script type="text/javascript" charset="utf8" src="{{root}}/static/DataTables/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         function addRowHandlers() {
             var table = document.getElementById("iid_table");
@@ -67,6 +67,7 @@
                    function(response){
                        window.location.reload();
                    });
+            button.value = 'Crawl';
         }
     </script>
 {% endblock %}

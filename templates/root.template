@@ -1,5 +1,5 @@
 <html>
-<link rel=stylesheet href='static/navigation_bar.css' type='text/css'>
+<link rel=stylesheet href='{{root}}/static/navigation_bar.css' type='text/css'>
 {% block css %}
 {% endblock %}
 <head>
@@ -8,10 +8,10 @@
 </head>
 	<body>
 <ul id='menu_wrap' class='l_blue'>
-  <li><a href="/index">Home of {{username}}</a></li>
-  <li><a href='/iid/new_iid'>Add new field</a></li>
-  <li><a href='/iid/list_iids'>List fields</a></li>
-  <li><a href='/logout'>logout</a></li>
+  <li><a href="{{root}}/index">Home of {{username}}</a></li>
+  <li><a href='{{root}}/iid/new_iid'>Add new field</a></li>
+  <li><a href='{{root}}/iid/list_iids'>List fields</a></li>
+  <li><a href='{{root}}/logout'>logout</a></li>
 </ul>
 {% block body %}
 {% endblock %}
